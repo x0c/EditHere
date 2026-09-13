@@ -97,3 +97,9 @@ Remote: `https://github.com/x0c/EditHere.git`
 - Do not claim continuous marking is silky from XCTest alone. Device feel still needs the phone capture.
 - Do not install a second UI-test runner. With a phone online, prove behavior on the installed sample — do not open Simulator because package tests have no device host.
 - Do not delete a working write surface or toolbar until the system replacement is on a running build.
+
+## Public GitHub mirror
+
+- Public: `https://github.com/x0c/EditHere.git` (remote name `github` on this machine)
+- Private Forgejo remains `origin` and keeps full history
+- GitHub started from a sanitized tree (no private LAN/host paths). When publishing updates: export a clean tree or cherry-pick commits that stay free of maintainer infrastructure, then push `github main`. Do not push unfiltered Forgejo history.
