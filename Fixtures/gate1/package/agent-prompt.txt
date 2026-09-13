@@ -1,0 +1,27 @@
+App: EditHere Sample
+Marks: blue rounded outline, white number on a blue pill at the top-left of the box. A point mark is a blue ring and crosshair with the same numbered pill.
+Page 1 · sample-home — marks 1, 2, 3, 4, 5
+
+1. Page 1 · sample-home
+Rename the title to "Recently used"
+On screen: Recent items
+
+2. Page 1 · sample-home
+Remove the marked element from the product.
+On screen: Promo card
+
+3. Page 1 · sample-home
+Change only this row’s primary label to "Pinned item"
+On screen: Item 3
+
+4. Page 1 · sample-home
+Make this control more obvious
+This mark is a numbered point (outline not recognized). Confirm the control on the screenshot.
+The change is not specific. Do not guess.
+
+5. Page 1 · sample-home
+Improve it
+On screen: Item 1
+The change is not specific. Do not guess.
+
+If several rows look the same, edit only the numbered one. Change only what is requested.

@@ -1,0 +1,33 @@
+{
+  "no_worker": {
+    "http": 200,
+    "state": "working",
+    "worker_configured": false
+  },
+  "changed_content_same_digest": {
+    "http": 200,
+    "reused": true,
+    "stored_request": ""
+  },
+  "empty_package": {
+    "http": 200,
+    "state": "working"
+  },
+  "cancel": {
+    "http": 200,
+    "reported_state": "cancelled",
+    "worker_wrote_after_cancel": true,
+    "submit_responded_before_worker_exit": false
+  },
+  "replay_prompt": {
+    "exit": 0,
+    "matches_original": false,
+    "actual": "App: EditHere Sample\nPage 1 \u00b7 sample-home \u2014 marks 1, 2, 3, 4, 5\n",
+    "original": "App: EditHere Sample\nMarks: blue rounded outline, white number on a blue pill at the top-left of the box. A point mark is a blue ring and crosshair with the same numbered pill.\nPage 1 \u00b7 sample-home \u2014 marks 1, 2, 3, 4, 5\n\n1. Page 1 \u00b7 sample-home\nRename the title to \"Recently used\"\nOn screen: Recent items\n\n2. Page 1 \u00b7 sample-home\nRemove the marked element from the product.\nOn screen: Promo card\n\n3. Page 1 \u00b7 sample-home\nChange only this row\u2019s primary label to \"Pinned item\"\nOn screen: Item 3\n\n4. Page 1 \u00b7 sample-home\nMake this control more obvious\nThis mark is a numbered point (outline not recognized). Confirm the control on the screenshot.\nThe change is not specific. Do not guess.\n\n5. Page 1 \u00b7 sample-home\nImprove it\nOn screen: Item 1\nThe change is not specific. Do not guess.\n\nIf several rows look the same, edit only the numbered one. Change only what is requested.\n"
+  },
+  "project_lookup": {
+    "first_project": "edithere-sample",
+    "second_project": "another-project",
+    "lookup_returns": "another-project"
+  }
+}

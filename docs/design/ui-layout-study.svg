@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1368" height="1050" viewBox="0 0 1368 1050">
+<rect width="1368" height="1050" fill="#eef0f3"/>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif} .body{font-size:16px;fill:#20242b} .muted{fill:#69727e} .blue{fill:#087af5}</style>
+<text x="48" y="48" font-size="27" fill="#17202d" font-weight="700">EditHere — interface redraw</text>
+<text x="48" y="78" font-size="15" fill="#66717f" font-weight="400">Proposed layout study · host content remains the canvas · not implemented UI</text>
+<text x="48" y="124" font-size="18" fill="#17202d" font-weight="600">01  Select</text>
+<text x="48" y="150" font-size="14" fill="#66717f" font-weight="400">One toolbar. No empty form.</text>
+<g transform="translate(48,174)">
+<rect x="0" y="0" width="390" height="820" rx="30" fill="#fafbfc"/>
+<text x="24" y="34" font-size="14" fill="#1b2028" font-weight="600">9:41</text>
+<text x="316" y="34" font-size="13" fill="#20242b" font-weight="400">•••  ▰</text>
+<text x="24" y="111" font-size="32" fill="#151b24" font-weight="700">Projects</text>
+<text x="24" y="144" font-size="16" fill="#727a85" font-weight="400">Your workspace</text>
+<rect x="20" y="176" width="350" height="124" rx="16" fill="white"/>
+<text x="36" y="208" font-size="20" fill="#20242b" font-weight="600">Mobile app</text>
+<text x="36" y="236" font-size="14" fill="#727a85" font-weight="400">Updated a moment ago</text>
+<text x="36" y="275" font-size="16" fill="#087af5" font-weight="600">Open project</text>
+<text x="24" y="348" font-size="20" fill="#20242b" font-weight="600">Recent activity</text>
+<text x="26" y="389" font-size="17" fill="#20242b" font-weight="400">Profile screen</text>
+<text x="26" y="413" font-size="13" fill="#727a85" font-weight="400">Updated today</text>
+<path d="M26 429h338" stroke="#e5e8ed"/>
+<text x="26" y="462" font-size="17" fill="#20242b" font-weight="400">Settings</text>
+<text x="26" y="486" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 502h338" stroke="#e5e8ed"/>
+<text x="26" y="535" font-size="17" fill="#20242b" font-weight="400">Search</text>
+<text x="26" y="559" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 575h338" stroke="#e5e8ed"/>
+<text x="26" y="608" font-size="17" fill="#20242b" font-weight="400">Notifications</text>
+<text x="26" y="632" font-size="13" fill="#727a85" font-weight="400">Updated Monday</text>
+<path d="M26 648h338" stroke="#e5e8ed"/>
+<rect x="144" y="804" width="102" height="5" rx="3" fill="#20242b"/>
+<rect x="19" y="362" width="352" height="76" rx="9" fill="#087af5" fill-opacity=".035" stroke="#087af5" stroke-width="2"/>
+<circle cx="29" cy="363" r="13" fill="#087af5"/>
+<text x="25" y="368" font-size="13" fill="white" font-weight="700">1</text>
+<rect x="12" y="728" width="366" height="58" rx="22" fill="#ffffff" stroke="#dce1e8"/>
+<text x="27" y="764" font-size="26" fill="#414b57" font-weight="400">×</text>
+<text x="65" y="763" font-size="15" fill="#20242b" font-weight="400">Browse</text>
+<text x="143" y="763" font-size="15" fill="#20242b" font-weight="400">Marks 1</text>
+<rect x="251" y="736" width="117" height="42" rx="15" fill="#087af5"/>
+<text x="270" y="763" font-size="15" fill="white" font-weight="600">Submit 1</text>
+</g>
+<text x="489" y="124" font-size="18" fill="#17202d" font-weight="600">02  Write</text>
+<text x="489" y="150" font-size="14" fill="#66717f" font-weight="400">Input saves as you move.</text>
+<g transform="translate(489,174)">
+<rect x="0" y="0" width="390" height="820" rx="30" fill="#fafbfc"/>
+<text x="24" y="34" font-size="14" fill="#1b2028" font-weight="600">9:41</text>
+<text x="316" y="34" font-size="13" fill="#20242b" font-weight="400">•••  ▰</text>
+<text x="24" y="111" font-size="32" fill="#151b24" font-weight="700">Projects</text>
+<text x="24" y="144" font-size="16" fill="#727a85" font-weight="400">Your workspace</text>
+<rect x="20" y="176" width="350" height="124" rx="16" fill="white"/>
+<text x="36" y="208" font-size="20" fill="#20242b" font-weight="600">Mobile app</text>
+<text x="36" y="236" font-size="14" fill="#727a85" font-weight="400">Updated a moment ago</text>
+<text x="36" y="275" font-size="16" fill="#087af5" font-weight="600">Open project</text>
+<text x="24" y="348" font-size="20" fill="#20242b" font-weight="600">Recent activity</text>
+<text x="26" y="389" font-size="17" fill="#20242b" font-weight="400">Profile screen</text>
+<text x="26" y="413" font-size="13" fill="#727a85" font-weight="400">Updated today</text>
+<path d="M26 429h338" stroke="#e5e8ed"/>
+<text x="26" y="462" font-size="17" fill="#20242b" font-weight="400">Settings</text>
+<text x="26" y="486" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 502h338" stroke="#e5e8ed"/>
+<text x="26" y="535" font-size="17" fill="#20242b" font-weight="400">Search</text>
+<text x="26" y="559" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 575h338" stroke="#e5e8ed"/>
+<text x="26" y="608" font-size="17" fill="#20242b" font-weight="400">Notifications</text>
+<text x="26" y="632" font-size="13" fill="#727a85" font-weight="400">Updated Monday</text>
+<path d="M26 648h338" stroke="#e5e8ed"/>
+<rect x="144" y="804" width="102" height="5" rx="3" fill="#20242b"/>
+<rect x="19" y="362" width="352" height="76" rx="9" fill="#087af5" fill-opacity=".035" stroke="#087af5" stroke-width="2"/>
+<circle cx="29" cy="363" r="13" fill="#087af5"/>
+<text x="25" y="368" font-size="13" fill="white" font-weight="700">1</text>
+<rect x="0" y="456" width="390" height="354" rx="26" fill="white"/>
+<rect x="177" y="464" width="36" height="4" rx="2" fill="#cbd0d7"/>
+<circle cx="30" cy="501" r="13" fill="#087af5"/>
+<text x="26" y="506" font-size="13" fill="white" font-weight="700">1</text>
+<text x="51" y="507" font-size="18" fill="#20242b" font-weight="600">Profile screen</text>
+<text x="289" y="507" font-size="16" fill="#087af5" font-weight="600">Done</text>
+<text x="358" y="507" font-size="23" fill="#66717f" font-weight="400">×</text>
+<text x="22" y="550" font-size="17" fill="#20242b" font-weight="400">Move the title closer to the top</text>
+<text x="22" y="576" font-size="17" fill="#20242b" font-weight="400">and remove the subtitle.</text>
+<path d="M22 602h346" stroke="#e5e8ed"/>
+<text x="22" y="632" font-size="14" fill="#087af5" font-weight="400">Remove element</text>
+<text x="215" y="632" font-size="14" fill="#087af5" font-weight="400">Change text</text>
+<rect x="12" y="649" width="366" height="49" rx="18" fill="#f4f6f9"/>
+<text x="25" y="680" font-size="15" fill="#20242b" font-weight="400">Browse</text>
+<text x="110" y="680" font-size="15" fill="#20242b" font-weight="400">Marks 1</text>
+<rect x="244" y="655" width="126" height="37" rx="12" fill="#087af5"/>
+<text x="272" y="680" font-size="15" fill="white" font-weight="600">Submit 1</text>
+<rect x="0" y="708" width="390" height="112" rx="0" fill="#e1e4e9"/>
+<text x="113" y="751" font-size="17" fill="#717b89" font-weight="400">System keyboard</text>
+<text x="90" y="779" font-size="13" fill="#717b89" font-weight="400">Sheet follows keyboard layout</text>
+</g>
+<text x="930" y="124" font-size="18" fill="#17202d" font-weight="600">03  Review, if needed</text>
+<text x="930" y="150" font-size="14" fill="#66717f" font-weight="400">Never a gate before Submit.</text>
+<g transform="translate(930,174)">
+<rect x="0" y="0" width="390" height="820" rx="30" fill="#fafbfc"/>
+<text x="24" y="34" font-size="14" fill="#1b2028" font-weight="600">9:41</text>
+<text x="316" y="34" font-size="13" fill="#20242b" font-weight="400">•••  ▰</text>
+<text x="24" y="111" font-size="32" fill="#151b24" font-weight="700">Projects</text>
+<text x="24" y="144" font-size="16" fill="#727a85" font-weight="400">Your workspace</text>
+<rect x="20" y="176" width="350" height="124" rx="16" fill="white"/>
+<text x="36" y="208" font-size="20" fill="#20242b" font-weight="600">Mobile app</text>
+<text x="36" y="236" font-size="14" fill="#727a85" font-weight="400">Updated a moment ago</text>
+<text x="36" y="275" font-size="16" fill="#087af5" font-weight="600">Open project</text>
+<text x="24" y="348" font-size="20" fill="#20242b" font-weight="600">Recent activity</text>
+<text x="26" y="389" font-size="17" fill="#20242b" font-weight="400">Profile screen</text>
+<text x="26" y="413" font-size="13" fill="#727a85" font-weight="400">Updated today</text>
+<path d="M26 429h338" stroke="#e5e8ed"/>
+<text x="26" y="462" font-size="17" fill="#20242b" font-weight="400">Settings</text>
+<text x="26" y="486" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 502h338" stroke="#e5e8ed"/>
+<text x="26" y="535" font-size="17" fill="#20242b" font-weight="400">Search</text>
+<text x="26" y="559" font-size="13" fill="#727a85" font-weight="400">Updated yesterday</text>
+<path d="M26 575h338" stroke="#e5e8ed"/>
+<text x="26" y="608" font-size="17" fill="#20242b" font-weight="400">Notifications</text>
+<text x="26" y="632" font-size="13" fill="#727a85" font-weight="400">Updated Monday</text>
+<path d="M26 648h338" stroke="#e5e8ed"/>
+<rect x="144" y="804" width="102" height="5" rx="3" fill="#20242b"/>
+<rect x="0" y="161" width="390" height="659" rx="26" fill="white"/>
+<rect x="177" y="169" width="36" height="4" rx="2" fill="#cbd0d7"/>
+<text x="22" y="215" font-size="25" fill="#17202d" font-weight="700">3 changes</text>
+<text x="355" y="215" font-size="25" fill="#66717f" font-weight="400">×</text>
+<text x="22" y="253" font-size="12" fill="#727a85" font-weight="600">PROJECTS</text>
+<circle cx="33" cy="299" r="13" fill="#087af5"/>
+<text x="29" y="304" font-size="13" fill="white" font-weight="700">1</text>
+<text x="56" y="304" font-size="17" fill="#20242b" font-weight="600">Profile screen</text>
+<text x="56" y="332" font-size="15" fill="#66717f" font-weight="400">Move the title up and</text>
+<text x="56" y="353" font-size="15" fill="#66717f" font-weight="400">remove the subtitle.</text>
+<text x="356" y="324" font-size="21" fill="#8d96a2" font-weight="400">›</text>
+<path d="M56 374h311" stroke="#e5e8ed"/>
+<circle cx="33" cy="416" r="13" fill="#087af5"/>
+<text x="29" y="421" font-size="13" fill="white" font-weight="700">2</text>
+<text x="56" y="421" font-size="17" fill="#20242b" font-weight="600">Open project</text>
+<text x="56" y="449" font-size="15" fill="#66717f" font-weight="400">Use “Continue” as</text>
+<text x="56" y="470" font-size="15" fill="#66717f" font-weight="400">the button label.</text>
+<text x="356" y="441" font-size="21" fill="#8d96a2" font-weight="400">›</text>
+<path d="M56 491h311" stroke="#e5e8ed"/>
+<circle cx="33" cy="533" r="13" fill="#087af5"/>
+<text x="29" y="538" font-size="13" fill="white" font-weight="700">3</text>
+<text x="56" y="538" font-size="17" fill="#20242b" font-weight="600">Notifications</text>
+<text x="56" y="566" font-size="15" fill="#66717f" font-weight="400">Remove this row.</text>
+<text x="56" y="587" font-size="15" fill="#66717f" font-weight="400"></text>
+<text x="356" y="558" font-size="21" fill="#8d96a2" font-weight="400">›</text>
+<path d="M56 608h311" stroke="#e5e8ed"/>
+<text x="22" y="679" font-size="16" fill="#66717f" font-weight="400">Overall instruction</text>
+<text x="355" y="679" font-size="22" fill="#087af5" font-weight="400">+</text>
+<path d="M22 701h346" stroke="#e5e8ed"/>
+<rect x="16" y="728" width="358" height="52" rx="18" fill="#087af5"/>
+<text x="158" y="761" font-size="17" fill="white" font-weight="600">Submit 3</text>
+</g>
+</svg>

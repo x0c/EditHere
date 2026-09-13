@@ -1,0 +1,54 @@
+{
+  "invalid_result_types": {
+    "state": "readyForReview",
+    "markOutcomes": [
+      {
+        "number": 999,
+        "paths": [],
+        "status": "changed",
+        "summary": ""
+      }
+    ],
+    "verification": {
+      "artifactReady": false,
+      "checksPassed": true,
+      "codeChanged": true,
+      "installed": true,
+      "visuallyVerified": true
+    }
+  },
+  "cancel_in_popen_gap": {
+    "cancel_http": 200,
+    "reported": "cancelled",
+    "wrote_after_cancel": true
+  },
+  "cancel_shell_only": {
+    "cancel_http": 200,
+    "reported": "cancelled",
+    "wrote_after_cancel": true
+  },
+  "persisted_pid_no_identity_check": {
+    "signals_attempted": [
+      [
+        424242,
+        15
+      ]
+    ],
+    "result": {
+      "hadProcess": true,
+      "stopped": true,
+      "recoveredFromDisk": true
+    }
+  },
+  "default_swift_initializer": {
+    "result": "conflict",
+    "message": "Recovered task destination local-host:sample does not match local-host.",
+    "runtime": "macOS standalone harness compiling current portable Swift targets; mocked HTTP response"
+  },
+  "reviewed_revision": "d18c01696211101b706bf182c68d587a778e3fe8",
+  "source_sha256": {
+    "Tools/edithere-host/edithere_host/worker.py": "99a3339bb69647960b755b6dadb2672e8e142d20c17f455aa47671a8e54f24ca",
+    "Sources/EditHereLocalHostDestination/LocalHostDestination.swift": "8bc1ce28ea549e1e126d865249ca889cf50ef7fb3a7923fc742c2d20afc3b059",
+    "Sources/EditHereCore/Outbox/Outbox.swift": "bf84dab5c218e7c9e5498fb5a1626bc7ad6e3fb9adc031c077cb3dc0cb66f29a"
+  }
+}

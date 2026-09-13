@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1",
+  "projectID": "edithere-sample",
+  "displayName": "EditHere Sample",
+  "executor": "corral-cursor",
+  "receiver": {
+    "baseURL": "http://127.0.0.1:8787",
+    "submitPath": "/v1/submissions",
+    "tokenHeader": "X-EditHere-Token",
+    "tokenEnvHint": "EDITHHERE_HOST_TOKEN"
+  },
+  "build": {
+    "scheme": "EditHereSample"
+  },
+  "delivery": {
+    "method": "ios-deliver"
+  },
+  "acceptance": {
+    "screens": ["sample-home"]
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "id": "2b64d0b3-b2c6-4202-8227-ee8b67545d58",
+  "schemaVersion": "1.0.0",
+  "createdAt": "2026-09-12T15:26:51Z",
+  "app": {
+    "bundleIdentifier": "local.edithere.sample",
+    "displayName": "EditHere Sample",
+    "marketingVersion": "0.1.0",
+    "buildNumber": "fixture",
+    "sourceRevision": null
+  },
+  "environment": {
+    "screenWidth": 390.0,
+    "screenHeight": 844.0,
+    "screenScale": 3.0,
+    "localeIdentifier": "en_US",
+    "preferredContentSizeCategory": null
+  },
+  "overallInstruction": "",
+  "captures": [
+    {
+      "id": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "screenID": "sample-home",
+      "sceneID": null,
+      "capturedAt": "2026-09-12T15:26:51Z",
+      "orientation": "portrait",
+      "originalImage": {
+        "relativePath": "assets/page-original.png",
+        "sha256": "0346a69b6c905d9a651461a0004388c44c473f861c7ab8fbe4a74980cde50c82",
+        "byteCount": 3301,
+        "width": 390.0,
+        "height": 844.0,
+        "scale": 1.0
+      },
+      "annotatedImage": {
+        "relativePath": "assets/page-annotated.png",
+        "sha256": "9b61af9ab8cf532743bbf4fe7ec0d93f20d9a53bddf56923cb79be6ebe56f710",
+        "byteCount": 3297,
+        "width": 390.0,
+        "height": 844.0,
+        "scale": 1.0
+      },
+      "coordinateSpace": "capture-pixels-top-left"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "bc0931c0-c608-44b5-aa6f-b9968005cffa",
+      "number": 1,
+      "captureID": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "selectionKind": "bounds",
+      "bounds": {
+        "x": 20,
+        "y": 96,
+        "width": 284,
+        "height": 48
+      },
+      "normalizedBounds": null,
+      "point": null,
+      "action": "changeText",
+      "requestText": "Rename the title to \"Recently used\"",
+      "targetHint": {
+        "visibleText": "Recent items",
+        "accessibilityLabel": null,
+        "className": null,
+        "automationIdentifier": null
+      },
+      "confidence": "high",
+      "createdAt": "2026-09-12T15:26:51Z"
+    },
+    {
+      "id": "d71449a8-c71f-456b-88ea-b8f8ea898e30",
+      "number": 2,
+      "captureID": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "selectionKind": "bounds",
+      "bounds": {
+        "x": 14,
+        "y": 158,
+        "width": 362,
+        "height": 104
+      },
+      "normalizedBounds": null,
+      "point": null,
+      "action": "remove",
+      "requestText": "",
+      "targetHint": {
+        "visibleText": "Promo card",
+        "accessibilityLabel": null,
+        "className": null,
+        "automationIdentifier": null
+      },
+      "confidence": "high",
+      "createdAt": "2026-09-12T15:26:51Z"
+    },
+    {
+      "id": "4a08ec8b-ce6c-4a1c-a7ef-d7a166d56baa",
+      "number": 3,
+      "captureID": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "selectionKind": "bounds",
+      "bounds": {
+        "x": 14,
+        "y": 438,
+        "width": 362,
+        "height": 52
+      },
+      "normalizedBounds": null,
+      "point": null,
+      "action": "changeText",
+      "requestText": "Change only this row\u2019s primary label to \"Pinned item\"",
+      "targetHint": {
+        "visibleText": "Item 3",
+        "accessibilityLabel": null,
+        "className": null,
+        "automationIdentifier": null
+      },
+      "confidence": "high",
+      "createdAt": "2026-09-12T15:26:51Z"
+    },
+    {
+      "id": "da9d8165-9ea8-494d-926a-bdd8ed9627fa",
+      "number": 4,
+      "captureID": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "selectionKind": "point",
+      "bounds": null,
+      "normalizedBounds": null,
+      "point": {
+        "x": 360,
+        "y": 60
+      },
+      "action": "adjustAppearance",
+      "requestText": "Make this control more obvious",
+      "targetHint": {
+        "visibleText": "",
+        "accessibilityLabel": null,
+        "className": null,
+        "automationIdentifier": null
+      },
+      "confidence": "high",
+      "createdAt": "2026-09-12T15:26:51Z"
+    },
+    {
+      "id": "50b30094-fbe8-4632-8fd2-d9bf9d073204",
+      "number": 5,
+      "captureID": "4d363e0e-2066-49c3-a81f-9b847fa7afc6",
+      "selectionKind": "bounds",
+      "bounds": {
+        "x": 16,
+        "y": 320,
+        "width": 358,
+        "height": 48
+      },
+      "normalizedBounds": null,
+      "point": null,
+      "action": "adjustAppearance",
+      "requestText": "Improve it",
+      "targetHint": {
+        "visibleText": "Item 1",
+        "accessibilityLabel": null,
+        "className": null,
+        "automationIdentifier": null
+      },
+      "confidence": "high",
+      "createdAt": "2026-09-12T15:26:51Z"
+    }
+  ],
+  "destinationID": "local-host"
+}

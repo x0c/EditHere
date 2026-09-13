@@ -1,0 +1,66 @@
+name: EditHereSample
+options:
+  bundleIdPrefix: top.caozc
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  BASE_SDK: iphoneos
+  TARGETED_DEVICE_FAMILY: "1,2"
+  SWIFT_VERSION: "6.0"
+  DEVELOPMENT_TEAM: SHZQ3MWP3B
+  CODE_SIGN_STYLE: Automatic
+packages:
+  EditHere:
+    path: ../..
+targets:
+  EditHereSample:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+      - path: edithere.project.json
+        buildPhase: resources
+    dependencies:
+      - package: EditHere
+        product: EditHere
+      - package: EditHere
+        product: EditHereFileDestination
+      - package: EditHere
+        product: EditHereLocalHostDestination
+    preBuildScripts:
+      - name: Embed EditHere credentials
+        basedOnDependencyAnalysis: false
+        script: |
+          set -e
+          DEST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+          mkdir -p "$DEST"
+          if [ -f "$SRCROOT/edithere.credentials.json" ]; then
+            cp "$SRCROOT/edithere.credentials.json" "$DEST/edithere.credentials.json"
+            echo "note: Embedded edithere.credentials.json from SRCROOT"
+          elif [ -n "${EDITHHERE_TOKEN_EDITHHERE_SAMPLE:-}${EDITHHERE_HOST_TOKEN:-}" ]; then
+            TOKEN="${EDITHHERE_TOKEN_EDITHHERE_SAMPLE:-$EDITHHERE_HOST_TOKEN}"
+            printf '{"token":"%s","projectID":"edithere-sample","tokenEnvHint":"EDITHHERE_TOKEN_EDITHHERE_SAMPLE"}\n' "$TOKEN" \
+              > "$DEST/edithere.credentials.json"
+            echo "note: Wrote edithere.credentials.json from build-env token"
+          else
+            rm -f "$DEST/edithere.credentials.json"
+            echo "note: Removed stale edithere.credentials.json; cold launch needs credentials when project JSON is bundled"
+          fi
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: top.caozc.EditHereSample
+      PRODUCT_NAME: EditHereSample
+      INFOPLIST_FILE: Info.plist
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES
+      INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+      INFOPLIST_KEY_CFBundleDisplayName: EditHere Sample
+      INFOPLIST_KEY_NSLocalNetworkUsageDescription: EditHere submits annotated screenshots to your development Mac on the local network.
+      INFOPLIST_KEY_NSBonjourServices: _edithere._tcp
+      CURRENT_PROJECT_VERSION: "48"
+      MARKETING_VERSION: "0.1.0"
+      DEVELOPMENT_TEAM: SHZQ3MWP3B
+      CODE_SIGN_STYLE: Automatic
+      TARGETED_DEVICE_FAMILY: "1,2"
+      SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO

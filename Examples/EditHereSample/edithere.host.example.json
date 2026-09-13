@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "listen": "0.0.0.0:8787",
+  "dataDir": "~/.local/share/edithere-host",
+  "tokenEnv": "EDITHHERE_HOST_TOKEN",
+  "projects": {
+    "edithere-sample": {
+      "checkout": "/ABSOLUTE/PATH/TO/EditHere/sdk-swift",
+      "projectConfig": "Examples/EditHereSample/edithere.project.json"
+    }
+  }
+}

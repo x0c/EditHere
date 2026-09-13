@@ -1,0 +1,48 @@
+{
+  "cancel_before_start": {
+    "cancel_http": 200,
+    "cancel_state": "cancelled",
+    "wrote_after_cancel": true,
+    "final_state": "working"
+  },
+  "results_invalid": {
+    "state": "readyForReview",
+    "markOutcomes": [],
+    "verification": {
+      "artifactReady": false,
+      "checksPassed": null,
+      "codeChanged": false,
+      "installed": false,
+      "visuallyVerified": false
+    }
+  },
+  "results_valid": {
+    "state": "readyForReview",
+    "markOutcomes": [],
+    "verification": {
+      "artifactReady": false,
+      "checksPassed": null,
+      "codeChanged": false,
+      "installed": false,
+      "visuallyVerified": false
+    }
+  },
+  "same_project_parallel": {
+    "simultaneous_started": 2
+  },
+  "cancel_after_receiver_restart": {
+    "cancel_http": 200,
+    "reported": "cancelled",
+    "wrote_after_cancel": true
+  },
+  "missing_prompt_retry": {
+    "first_http": 200,
+    "first_state": "failed",
+    "retry_state": "failed",
+    "reused": true,
+    "prompt_exists": false
+  },
+  "credential_removed_from_config": {
+    "stale_bundle_credential_remains": true
+  }
+}
