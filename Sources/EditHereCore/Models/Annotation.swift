@@ -54,6 +54,13 @@ public struct EditHereTargetHint: Codable, Hashable, Sendable {
     public var visibleText: String?
     public var stableTargetID: String?
     public var instanceIndex: Int?
+    /// Web-only. Stored for clients; never printed in the Agent prompt.
+    public var pageURL: String?
+    /// Web-only CSS selector. Stored; never printed in the Agent prompt.
+    public var cssSelector: String?
+    /// Optional source path from a web bundler (e.g. React). Stored; never printed.
+    public var sourceFile: String?
+    public var sourceLine: Int?
 
     public init(
         accessibilityLabel: String? = nil,
@@ -61,7 +68,11 @@ public struct EditHereTargetHint: Codable, Hashable, Sendable {
         className: String? = nil,
         visibleText: String? = nil,
         stableTargetID: String? = nil,
-        instanceIndex: Int? = nil
+        instanceIndex: Int? = nil,
+        pageURL: String? = nil,
+        cssSelector: String? = nil,
+        sourceFile: String? = nil,
+        sourceLine: Int? = nil
     ) {
         self.accessibilityLabel = accessibilityLabel
         self.accessibilityIdentifier = accessibilityIdentifier
@@ -69,6 +80,10 @@ public struct EditHereTargetHint: Codable, Hashable, Sendable {
         self.visibleText = visibleText
         self.stableTargetID = stableTargetID
         self.instanceIndex = instanceIndex
+        self.pageURL = pageURL
+        self.cssSelector = cssSelector
+        self.sourceFile = sourceFile
+        self.sourceLine = sourceLine
     }
 }
 

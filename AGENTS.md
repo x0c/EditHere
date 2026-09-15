@@ -2,15 +2,21 @@
 <!-- source: product-root AGENTS.md (maintainer) -->
 # EditHere
 
-Reusable iOS UI annotation component for developers.
+Mark on-screen UI and submit a numbered-screenshot packet to a coding assistant. Capture is per platform. Prompt assembly and named-executor dump live on the local host.
 
 ## Components
 
 | Path | Remote | Role |
 |---|---|---|
-| `sdk-swift/` | `https://github.com/x0c/EditHere.git` (public); private Forgejo mirror for maintainers | Swift package (`EditHereCore`, `EditHere`, `EditHereFileDestination`, `EditHereLocalHostDestination`) + sample app + `Tools/edithere-host` |
+| `sdk-swift/` | `https://github.com/x0c/EditHere.git` (public); private Forgejo mirror for maintainers | iOS SDK (`EditHereCore`, `EditHere`, destinations) + sample app |
+| `sdk-swift/Tools/edithere-host/` | same git as `sdk-swift/` | Shared local server: canonical prompt, package accept, fire-and-forget dump |
+| `chrome/` | private Forgejo `Max/edithere-chrome` | Chrome extension capture client; POSTs packages to the host |
+
+Android is a later capture client against the same host — not started.
 
 ## When to read what
+
+- `sdk-swift/docs/design/CROSS_PLATFORM_ARCHITECTURE.md`: **must read** before adding a client, splitting prompt/adapters into a JS/Swift/Kotlin library, planning Chrome Submit, or treating a new language package as the shared core. Capture stays on the client; the host owns prompt + dump. Skipping it builds a JS runtime for iOS to call, duplicates prompt builders, or invents a second Agent platform.
 
 - `sdk-swift/docs/reviews/2026-09-13-FIRE_AND_FORGET_E2E_REVIEW.md`: **must read** before claiming the fire-and-forget loop is proven, planning phone Submit dump, reporting an execution / 端到端 review, or treating `76550cc` live dump / 真包投递 / **假成功** / **白review** / **钉死** / **没看懂审查** / **审查有没有找出问题** / **提交成功助手没收到** as acceptance. Records the bugs: Submit can succeed while the assistant never received the work (missing executor name; older receiver); the claimed dump-applied-edits paragraph is false proof; dormant progress/cancel still advertised. Skipping it re-opens task-status/write-back as P1, reports the loop done from replay narrative, or tells the user the review found nothing.
 
@@ -29,12 +35,13 @@ Reusable iOS UI annotation component for developers.
 - `sdk-swift/docs/design/AGENT_PROMPT_CORE_DESIGN.md`: **must read** before changing the generated Agent prompt, Submit packaging, prompt template versioning, Marks Prompt preview, claiming Submit quality, or when the task is **废话** / 无效提示词 / Prompt template 是啥意思 / 提示词优不优秀 / 原图要不要给助手 / 知道不好就直接改. Skipping it prints packing numbers and process lectures into the packet, ships a second unannotated original, reviews junk without cutting it, splits one batch into many sessions, or turns Preview into a plan gate.
 - `sdk-swift/docs/troubleshooting/2026-09-12-annotation-chrome.md`: **must read** before changing overlay hit-testing, frozen-canvas drawing, evidence encode timing, Marks list delete / icon-only Delete / upper-left deletion motion, write-sheet / popover presentation, claiming a Simulator tap failed, or troubleshooting 卡顿 / 假死 / 连续标注 hitch / “no async” / 白底连到键盘 / Marks 切页越界 / **键盘没有立刻弹出** / **输入条闪现** / **弹窗时背后还能点焦点** / **输入面板半透明** / **80%半透明** / **半透明不好看** / **弹出卡片变成方形** / **Actions 居中** / **Quick Actions** / **一点效果没有** / **正事儿没做** / **关闭靠右** / **N Marks**. Skipping it repeats the extra sheet window, PNG-zoom, a ~1s hitch after Done, red swipe hairline, a list that rebuilds from the session publisher mid-swipe, stuck consecutive deletes, a connected white slab under a compact sheet, empty-state overflow after waiting for keyboard hide, focusing the request field after the present animation or before appearance starts (flash), putting the frozen canvas in popover passthrough, restoring a see-through write composer, walking popover wrappers into a square card, or treating a missed automation click as a product defect.
 - `sdk-swift/docs/CORRAL_CLOSED_LOOP_ADAPTER_DESIGN.md`: **must read** before implementing, configuring or reviewing `corral-cursor` / named-executor dump / 任务状态 / 回写 / 写回 / 默认关闭 / **假成功** / **提交成功助手没收到**. Live path is dump-to-executor only. Missing executor name that still looks like Submit success is a defect. Write-back, task-status and result UI in that doc are dormant and default off. Skipping it invents nested adapter/runtime fields, waits on a result file, or continues the dormant status machine.
-- `sdk-swift/docs/design/ARCHITECTURE_BOUNDS.md`: **must read** before changing architecture boundaries or feasibility assumptions. Skipping it risks treating brainstorm proposals as shipped guarantees.
+- `sdk-swift/docs/design/ARCHITECTURE_BOUNDS.md`: **must read** before changing architecture boundaries or feasibility assumptions. Skipping it risks treating brainstorm proposals as shipped guarantees. Cross-platform split is in `CROSS_PLATFORM_ARCHITECTURE.md`.
 - Maintainer client UI index (private): must read before any user-visible UI change.
 
 ## Hard constraints
 
 - Fully decoupled from Corral. Optional adapters only.
+- Shared post-mark work is the local host, not a JS (or other) SDK every platform embeds.
 - One-time app entry integration; no per-control source edits required for normal use.
 - Submit starts work for execution destinations; file export is for portability proof only.
 - **Fire-and-forget (2026-09-13):** Submit dumps the frozen package to the named executor and assumes it finishes. Do **not** implement or expand a product task-status machine, result write-back, or result UI. Already-written plans and code for those stay dormant and **default off**. Failed or missing work is re-marked and submitted again; source edits are idempotent. Skipping this resumes wait-for-results and status chrome the user rejected as over-complicating.
@@ -83,7 +90,7 @@ Remote: `https://github.com/x0c/EditHere.git`
 - `Sources/EditHere` — iOS floating UI + selection + capture
 - `Sources/EditHereFileDestination` — disk exporter destination
 - `Sources/EditHereLocalHostDestination` — HTTP submit to development-host receiver
-- `Tools/edithere-host` — durable local receiver / replay CLI (see its README)
+- `Tools/edithere-host` — shared local server (canonical prompt, accept, dump). See its README and `docs/design/CROSS_PLATFORM_ARCHITECTURE.md`.
 - `Fixtures/gate1` — image-to-source acceptance package + device evidence
 - `Examples/EditHereSample` — demo host app (XcodeGen); project config in `edithere.project.json`
 - `Tests` — core, file-destination, and local-host destination tests

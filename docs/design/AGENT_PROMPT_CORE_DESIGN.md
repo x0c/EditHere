@@ -62,9 +62,10 @@ Required content:
    - Human control kind only when there is no on-screen wording. Never `_UI…` class names.
    - Point marks: outline was not recognized; confirm on the screenshot.
    - If the change is not specific: “Do not guess.” No `Completeness:` vocabulary.
-6. Closing: if several rows look the same, edit only the numbered one; change only what is requested.
 
 Keep developer-typed text in the language the developer wrote. Framing stays English (Agent default).
+
+Do **not** append a closing lecture such as “If several rows look the same…” or “Change only what is requested.” (user 2026-09-13: filler — the numbered badge already picks the instance; these lines do not locate a mark or specify the change).
 
 ### Completeness (when to say “do not guess”)
 
@@ -97,6 +98,7 @@ These were shipped into the Agent-facing text and rejected. Do not put them back
 - Process blocks the model cannot act on: plan approval, single session, “authorized batch,” report schema (`changed / not changed / unresolved`), `## Task` / `## Rules` / `## Output`.
 - Duplicate canned Remove as both request and action; `Request:` / `Completeness:` labels; private `_UI…` class names; UUID asset paths; normalized coordinates.
 - Stopping at a written quality review after finding junk (user: “你知道元认知了就直接改” / “全面排查废话”). Cut the lines.
+- Closing filler `Change only what is requested.` / `If several rows look the same, edit only the numbered one.` (user 2026-09-13).
 
 ## What not to optimize first
 
@@ -111,12 +113,12 @@ These were shipped into the Agent-facing text and rejected. Do not put them back
 2. Replay the same saved packages through the new template.
 3. Score **applied UI** (correct control, correct change, unrelated tree preserved, unresolved when appropriate). Do not score fluent Agent prose.
 4. Record failures as fixtures (wrong control, guessed appearance, ignored screenshot, split sessions).
-5. Fill instance identity for repeated rows when selection can supply it; until then the screenshot is the disambiguator and the prompt must say so.
+5. Fill instance identity for repeated rows when selection can supply it; until then the numbered screenshot badge is the disambiguator — do **not** print a closing lecture about it.
 
 Feasibility experiment 1 in the cross-project design remains the quality gate for “Agents can locate source from numbered pages.” This file does not claim that gate has passed.
 
 ## Current implementation
 
-The Agent-facing prompt is a short legend for the numbered screenshots. Internal packing generation **6** must **not** appear in that text. File export may prefix `Page 1: page-1.png` lines with no lecture. Do not restore process copy (plan approval, single session, report schema, `Prompt template: N`, product title, bundle id, build number). Named-executor dump is wired (`corral-cursor`); this file still owns only the prompt/packet contract. Do not re-implement dump because an older sentence here said adapters were unwired.
+The Agent-facing prompt is a short legend for the numbered screenshots. Internal packing generation **8** must **not** appear in that text. The **host** (`edithere_host/prompt.py`) is the canonical generator for thin clients (Chrome). iOS may still derive the same legend locally for on-device Preview; Submit may upload that text, which the host validates. File export may prefix `Page 1: page-1.png` lines with no lecture. Do not restore process copy. Named-executor dump is wired (`corral-cursor`). Do not re-implement dump in each client.
 
 The preview is a developer inspection of the Agent packet. It must not become a plan-approval step. Back returns to Marks; Submit on Marks still starts work.

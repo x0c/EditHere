@@ -19,6 +19,7 @@ from .package_util import (
     require_canonical_prompt_bytes,
     validate_package_and_assets,
 )
+from .prompt import assemble_execution_assets, execution_prompt
 from .executors import MissingExecutor, UnknownExecutor
 from .executors.dispatch import dump_accepted_task, read_executor_name, require_known_executor
 from .store import ConflictError, TaskStore
@@ -77,12 +78,29 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
             # Never log Authorization / token headers. Standard access line only.
             sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
+        def _cors_headers(self) -> None:
+            # Browser capture clients (Chrome) and future web tools. iOS ignores these.
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header(
+                "Access-Control-Allow-Headers",
+                "X-EditHere-Token, X-EditHere-Project-ID, Content-Type",
+            )
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+
+        def do_OPTIONS(self) -> None:
+            self.send_response(204)
+            self._cors_headers()
+            self.send_header("Content-Length", "0")
+            self.send_header("Connection", "close")
+            self.end_headers()
+
         def _send_json(self, status: int, payload: dict[str, Any]) -> None:
             body = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True).encode("utf-8")
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Connection", "close")
+            self._cors_headers()
             self.end_headers()
             self.wfile.write(body)
 
@@ -217,6 +235,9 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
         def _do_POST(self) -> None:
             parsed = urlparse(self.path)
             path = unquote(parsed.path)
+            if path == "/v1/preview":
+                self._handle_preview()
+                return
             if path == "/v1/submissions":
                 self._handle_submit()
                 return
@@ -243,27 +264,118 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
                 return b""
             return self.rfile.read(length)
 
-        def _handle_submit(self) -> None:
+        def _parse_package_fields(self) -> Optional[tuple[str, str, str, bytes, dict[str, bytes]]]:
             content_type = self.headers.get("Content-Type") or ""
             body = self._read_body()
             try:
                 fields = parse_multipart(content_type, body)
             except ValueError as exc:
                 self._fail(400, "bad_request", f"Invalid multipart body: {exc}")
-                return
+                return None
 
             project_id = (first_text(fields, "projectID") or "").strip()
             submission_id = (first_text(fields, "submissionID") or "").strip()
             claimed_digest = (first_text(fields, "contentDigest") or "").strip()
             package_bytes = first_bytes(fields, "package")
 
-            if not project_id or not submission_id or not claimed_digest or package_bytes is None:
+            if not project_id or not submission_id or package_bytes is None:
                 self._fail(
                     400,
                     "bad_request",
-                    "Missing required fields: projectID, submissionID, contentDigest, package.",
+                    "Missing required fields: projectID, submissionID, package.",
+                )
+                return None
+
+            assets: dict[str, bytes] = {}
+            for name, items in fields.items():
+                if name in ("projectID", "submissionID", "contentDigest", "package"):
+                    continue
+                for item in items:
+                    rel = name
+                    if ".." in rel.split("/") or rel.startswith(("/", "\\")):
+                        self._fail(400, "bad_request", f"Unsafe asset path: {rel}")
+                        return None
+                    assets[rel] = item.data
+            return project_id, submission_id, claimed_digest, package_bytes, assets
+
+        def _load_valid_package(
+            self,
+            package_bytes: bytes,
+            assets: dict[str, bytes],
+            submission_id: str,
+        ) -> Optional[dict[str, Any]]:
+            try:
+                package, problems = validate_package_and_assets(
+                    package_bytes, assets, submission_id=submission_id
+                )
+            except ValueError as exc:
+                self._fail(400, "invalid_package", str(exc))
+                return None
+            if problems:
+                identityish = any(
+                    "submissionID" in p or "schemaVersion" in p or "must be" in p or "missing id" in p
+                    for p in problems
+                )
+                code = "invalid_package" if identityish else "incomplete_assets"
+                self._fail(
+                    400,
+                    code,
+                    "Package validation failed before acknowledge.",
+                    hint="; ".join(problems[:8]),
+                )
+                return None
+            return package
+
+        def _ensure_canonical_prompt(
+            self, package: dict[str, Any], assets: dict[str, bytes]
+        ) -> Optional[dict[str, bytes]]:
+            prompt_bytes = assets.get("agent-prompt.txt")
+            if prompt_bytes is None:
+                _prompt, assembled = assemble_execution_assets(package, assets)
+                try:
+                    require_canonical_prompt_bytes(assembled["agent-prompt.txt"], package)
+                except ValueError as exc:
+                    self._fail(400, "incomplete_packet", str(exc))
+                    return None
+                return assembled
+            try:
+                require_canonical_prompt_bytes(prompt_bytes, package)
+            except ValueError as exc:
+                self._fail(400, "incomplete_packet", str(exc))
+                return None
+            return assets
+
+        def _handle_preview(self) -> None:
+            parsed = self._parse_package_fields()
+            if parsed is None:
+                return
+            project_id, submission_id, _claimed, package_bytes, assets = parsed
+            if not self._check_token(project_id):
+                return
+            if project_id not in state.config.projects:
+                self._fail(
+                    404,
+                    "not_found",
+                    f"Unknown projectID {project_id}.",
+                    hint="Register the project in host.json projects.",
                 )
                 return
+            package = self._load_valid_package(package_bytes, assets, submission_id)
+            if package is None:
+                return
+            prompt = execution_prompt(package)
+            try:
+                require_canonical_prompt_bytes(prompt.encode("utf-8"), package)
+            except ValueError as exc:
+                self._fail(400, "incomplete_packet", str(exc))
+                return
+            self._ok({"prompt": prompt, "assembled": True})
+
+        def _handle_submit(self) -> None:
+            parsed = self._parse_package_fields()
+            if parsed is None:
+                return
+            project_id, submission_id, claimed_digest, package_bytes, assets = parsed
 
             if not self._check_token(project_id):
                 return
@@ -277,42 +389,17 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
                 )
                 return
 
-            assets: dict[str, bytes] = {}
-            for name, items in fields.items():
-                if name in ("projectID", "submissionID", "contentDigest", "package"):
-                    continue
-                for item in items:
-                    # Form name is the relative path (e.g. assets/foo.png).
-                    rel = name
-                    if ".." in rel.split("/") or rel.startswith(("/", "\\")):
-                        self._fail(400, "bad_request", f"Unsafe asset path: {rel}")
-                        return
-                    assets[rel] = item.data
+            package = self._load_valid_package(package_bytes, assets, submission_id)
+            if package is None:
+                return
 
-            try:
-                package, problems = validate_package_and_assets(
-                    package_bytes, assets, submission_id=submission_id
-                )
-            except ValueError as exc:
-                self._fail(400, "invalid_package", str(exc))
+            assembled = self._ensure_canonical_prompt(package, assets)
+            if assembled is None:
                 return
-            if problems:
-                # Identity / schema issues vs missing assets.
-                identityish = any(
-                    "submissionID" in p or "schemaVersion" in p or "must be" in p or "missing id" in p
-                    for p in problems
-                )
-                code = "invalid_package" if identityish else "incomplete_assets"
-                self._fail(
-                    400,
-                    code,
-                    "Package validation failed before acknowledge.",
-                    hint="; ".join(problems[:8]),
-                )
-                return
+            assets = assembled
 
             recomputed = compute_content_digest(package_bytes, assets, package)
-            if claimed_digest.lower() != recomputed.lower():
+            if claimed_digest and claimed_digest.lower() != recomputed.lower():
                 self._fail(
                     400,
                     "digest_mismatch",
@@ -320,22 +407,7 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
                     hint=f"recomputed={recomputed}",
                 )
                 return
-
-            # Complete execution packet required before durable acceptance (R4).
-            prompt_bytes = assets.get("agent-prompt.txt")
-            if prompt_bytes is None:
-                self._fail(
-                    400,
-                    "incomplete_packet",
-                    "Canonical agent-prompt.txt is required before acceptance.",
-                    hint="Upload agent-prompt.txt with numbered requests; retry the same submissionID after fixing.",
-                )
-                return
-            try:
-                require_canonical_prompt_bytes(prompt_bytes, package)
-            except ValueError as exc:
-                self._fail(400, "incomplete_packet", str(exc))
-                return
+            claimed_digest = recomputed
 
             try:
                 executor_name = read_executor_name(state.config, project_id)

@@ -143,8 +143,6 @@ def _canonical_prompt_text() -> str:
         "1. Page 1 · home\n"
         "Rename the title\n"
         "On screen: Recent items\n"
-        "\n"
-        "If several rows look the same, edit only the numbered one.\n"
     )
 
 
@@ -262,7 +260,7 @@ class HostHTTPTests(unittest.TestCase):
         fields: dict[str, str | bytes] = {
             "projectID": project_id,
             "submissionID": sid,
-            "contentDigest": digest or self.content_digest,
+            "contentDigest": self.content_digest if digest is None else digest,
             "package": pkg,
         }
         files = dict(assets if assets is not None else self.default_assets)
@@ -448,19 +446,75 @@ class HostHTTPTests(unittest.TestCase):
         tasks_root = self.data_dir / "tasks"
         self.assertFalse(tasks_root.is_dir() and any(tasks_root.iterdir()))
 
-    def test_missing_prompt_rejected_then_retry_succeeds(self) -> None:
+    def test_missing_prompt_is_assembled_on_the_host(self) -> None:
+        assets_no_prompt = {self.asset_rel: self.asset_bytes}
+        status, body = self._post(digest="", assets=assets_no_prompt)
+        self.assertEqual(status, 200, body)
+        self.assertTrue(body["ok"])
+        self.assertTrue(body["meta"].get("created"))
+        task = body["data"]
+        stored = (
+            self.data_dir / "tasks" / task["remoteTaskID"] / "package" / "agent-prompt.txt"
+        )
+        prompt = stored.read_text(encoding="utf-8")
+        self.assertIn("1. Page 1 · home", prompt)
+        self.assertIn("Rename the title", prompt)
+
+    def test_preview_assembles_prompt_without_dump(self) -> None:
+        assets_no_prompt = {self.asset_rel: self.asset_bytes}
+        fields: dict[str, str | bytes] = {
+            "projectID": "edithere-sample",
+            "submissionID": self.submission_id,
+            "package": self.package_bytes,
+        }
+        body, content_type = _encode_multipart(fields, assets_no_prompt)
+        conn = HTTPConnection("127.0.0.1", self.port, timeout=10)
+        try:
+            conn.request(
+                "POST",
+                "/v1/preview",
+                body=body,
+                headers={
+                    "Content-Type": content_type,
+                    "X-EditHere-Token": self.token,
+                    "Content-Length": str(len(body)),
+                },
+            )
+            resp = conn.getresponse()
+            payload = json.loads(resp.read().decode("utf-8"))
+        finally:
+            conn.close()
+        self.assertEqual(resp.status, 200, payload)
+        self.assertTrue(payload["ok"])
+        self.assertIn("1. Page 1 · home", payload["data"]["prompt"])
+        tasks_root = self.data_dir / "tasks"
+        self.assertFalse(tasks_root.is_dir() and any(tasks_root.iterdir()))
+
+    def test_options_allows_browser_preflight(self) -> None:
+        conn = HTTPConnection("127.0.0.1", self.port, timeout=10)
+        try:
+            conn.request(
+                "OPTIONS",
+                "/v1/preview",
+                headers={"Origin": "https://example.com"},
+            )
+            resp = conn.getresponse()
+            resp.read()
+        finally:
+            conn.close()
+        self.assertEqual(resp.status, 204)
+        self.assertEqual(resp.getheader("Access-Control-Allow-Origin"), "*")
+        allow = resp.getheader("Access-Control-Allow-Headers") or ""
+        self.assertIn("X-EditHere-Token", allow)
+
+    def test_stale_digest_without_assembled_prompt_is_rejected(self) -> None:
         assets_no_prompt = {self.asset_rel: self.asset_bytes}
         digest_no_prompt = compute_content_digest(
             self.package_bytes, assets_no_prompt, self.package
         )
-        status1, body1 = self._post(digest=digest_no_prompt, assets=assets_no_prompt)
-        self.assertEqual(status1, 400, body1)
-        self.assertEqual(body1["error"]["code"], "incomplete_packet")
-
-        status2, body2 = self._post()
-        self.assertEqual(status2, 200, body2)
-        self.assertTrue(body2["ok"])
-        self.assertTrue(body2["meta"].get("created"))
+        status, body = self._post(digest=digest_no_prompt, assets=assets_no_prompt)
+        self.assertEqual(status, 400, body)
+        self.assertEqual(body["error"]["code"], "digest_mismatch")
 
     @unittest.skip(
         "Dormant auto-worker is unreachable: missing executor now fails accept."

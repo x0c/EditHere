@@ -51,13 +51,16 @@ export EDITHHERE_TOKEN_EDITHHERE_SAMPLE=...   # or EDITHHERE_HOST_TOKEN
 # Preview only:   ./edithere-host serve --dry-run
 ```
 
-Accept requires a complete execution packet **before** durable publication: annotated images plus a canonical `agent-prompt.txt` (included in `contentDigest`). Missing/invalid prompt → `400` / `incomplete_packet` (same `submissionID` can retry after fixing). Missing/unknown `executor` → `400` / `missing_executor` or `unknown_executor`. Accepted tasks start as `submitted` and dump to the named executor. `--auto-worker` is **dormant / not the live product path** and cannot substitute for a missing executor name.
+This host is the shared EditHere server: thin clients send numbered screenshots and mark JSON; the host generates `agent-prompt.txt` when omitted, then dumps to the named executor. iOS may still upload a prompt; if present it is validated, not rewritten. Invalid uploaded prompts still return `400` / `incomplete_packet`. Missing/unknown `executor` → `400` / `missing_executor` or `unknown_executor`. Accepted tasks start as `submitted` and dump. `--auto-worker` is **dormant / not the live product path**. Browser clients: CORS preflight is answered; Chrome still POSTs from the extension background (HTTPS pages cannot fetch this HTTP port).
+
+Cross-platform split: `docs/design/CROSS_PLATFORM_ARCHITECTURE.md` (from the `sdk-swift` root). Prompt rules: `docs/design/AGENT_PROMPT_CORE_DESIGN.md`.
 
 ### HTTP (all responses use `{ok,data,error,meta}`)
 
 | Method | Path | Notes |
 |---|---|---|
-| `POST` | `/v1/submissions` | multipart: `projectID`, `submissionID`, `contentDigest`, `package`, plus asset files named by relative path (must include `agent-prompt.txt`); header `X-EditHere-Token`. Server recomputes digest; mismatch → `400` / `digest_mismatch`. |
+| `POST` | `/v1/preview` | Same multipart as Submit (`projectID`, `submissionID`, `package`, annotated images). Returns `{ prompt }` and does **not** persist or dump. |
+| `POST` | `/v1/submissions` | multipart: `projectID`, `submissionID`, `package`, plus asset files named by relative path; header `X-EditHere-Token`. `contentDigest` and `agent-prompt.txt` are optional for thin clients — the host generates the prompt, copies `page-N.png`, and computes the digest. If `contentDigest` is sent, it must match the **post-assembly** digest (`400` / `digest_mismatch` otherwise). |
 | `GET` | `/v1/submissions/{submissionID}?projectID=` | dormant lookup — **`projectID` query (or `X-EditHere-Project-ID` header) required** |
 | `GET` | `/v1/projects/{projectID}/submissions/{submissionID}` | dormant lookup, nested path |
 | `GET` | `/v1/tasks/{remoteTaskID}` | dormant lookup |
