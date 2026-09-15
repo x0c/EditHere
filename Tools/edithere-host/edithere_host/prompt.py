@@ -276,13 +276,14 @@ def execution_prompt(package: dict[str, Any]) -> str:
     return "\n".join(envelope)
 
 
-def assemble_execution_assets(
+def ensure_page_png_assets(
     package: dict[str, Any], assets: dict[str, bytes]
-) -> tuple[str, dict[str, bytes]]:
+) -> dict[str, bytes]:
     """
-    Add canonical agent-prompt.txt and page-N.png copies of annotated captures.
+    Copy each used annotated capture to root page-N.png.
 
-    Does not draw marks; clients send already-annotated images.
+    Prompt catalogs name page-N.png; dump prefers those files. Safe to call when
+    the client already uploaded a validated agent-prompt.txt (does not rewrite it).
     """
     out = dict(assets)
     annotations = _renumbered(package)
@@ -292,6 +293,18 @@ def assemble_execution_assets(
         page_name = f"page-{index + 1}.png"
         if rel and rel in out:
             out[page_name] = out[rel]
+    return out
+
+
+def assemble_execution_assets(
+    package: dict[str, Any], assets: dict[str, bytes]
+) -> tuple[str, dict[str, bytes]]:
+    """
+    Add canonical agent-prompt.txt and page-N.png copies of annotated captures.
+
+    Does not draw marks; clients send already-annotated images.
+    """
+    out = ensure_page_png_assets(package, assets)
     prompt = execution_prompt(package)
     out["agent-prompt.txt"] = prompt.encode("utf-8")
     return prompt, out

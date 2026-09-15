@@ -51,7 +51,7 @@ export EDITHHERE_TOKEN_EDITHHERE_SAMPLE=...   # or EDITHHERE_HOST_TOKEN
 # Preview only:   ./edithere-host serve --dry-run
 ```
 
-This host is the shared EditHere server: thin clients send numbered screenshots and mark JSON; the host generates `agent-prompt.txt` when omitted, then dumps to the named executor. iOS may still upload a prompt; if present it is validated, not rewritten. Invalid uploaded prompts still return `400` / `incomplete_packet`. Missing/unknown `executor` → `400` / `missing_executor` or `unknown_executor`. Accepted tasks start as `submitted` and dump. `--auto-worker` is **dormant / not the live product path**. Browser clients: CORS preflight is answered; Chrome still POSTs from the extension background (HTTPS pages cannot fetch this HTTP port).
+This host is the shared EditHere server: thin clients send numbered screenshots and mark JSON; the host generates `agent-prompt.txt` when omitted, then dumps to the named executor. iOS may still upload a prompt; if present it is validated, not rewritten, and the host still copies annotated captures to `page-N.png`. Invalid uploaded prompts still return `400` / `incomplete_packet`. Missing/unknown `executor` → `400` / `missing_executor` or `unknown_executor`. Accepted tasks start as `submitted` and dump. Successful Submit (and `/v1/health`) advertise `meta.executionPath=named-executor-dump` so clients can reject an older receiver that still accepts without dumping. `--auto-worker` is **dormant / not the live product path**. Browser clients: CORS preflight is answered; Chrome still POSTs from the extension background (HTTPS pages cannot fetch this HTTP port).
 
 Cross-platform split: `docs/design/CROSS_PLATFORM_ARCHITECTURE.md` (from the `sdk-swift` root). Prompt rules: `docs/design/AGENT_PROMPT_CORE_DESIGN.md`.
 
@@ -59,8 +59,9 @@ Cross-platform split: `docs/design/CROSS_PLATFORM_ARCHITECTURE.md` (from the `sd
 
 | Method | Path | Notes |
 |---|---|---|
+| `GET` | `/v1/health` | Token required. Returns `executionPath=named-executor-dump` when this dump host is listening. |
 | `POST` | `/v1/preview` | Same multipart as Submit (`projectID`, `submissionID`, `package`, annotated images). Returns `{ prompt }` and does **not** persist or dump. |
-| `POST` | `/v1/submissions` | multipart: `projectID`, `submissionID`, `package`, plus asset files named by relative path; header `X-EditHere-Token`. `contentDigest` and `agent-prompt.txt` are optional for thin clients — the host generates the prompt, copies `page-N.png`, and computes the digest. If `contentDigest` is sent, it must match the **post-assembly** digest (`400` / `digest_mismatch` otherwise). |
+| `POST` | `/v1/submissions` | multipart: `projectID`, `submissionID`, `package`, plus asset files named by relative path; header `X-EditHere-Token`. `contentDigest` and `agent-prompt.txt` are optional for thin clients — the host generates the prompt, copies `page-N.png`, and computes the digest. If `contentDigest` is sent, it must match the **post-assembly** digest (`400` / `digest_mismatch` otherwise). Success `meta` includes `executionPath`, `executor`, and `dumpStarted`. |
 | `GET` | `/v1/submissions/{submissionID}?projectID=` | dormant lookup — **`projectID` query (or `X-EditHere-Project-ID` header) required** |
 | `GET` | `/v1/projects/{projectID}/submissions/{submissionID}` | dormant lookup, nested path |
 | `GET` | `/v1/tasks/{remoteTaskID}` | dormant lookup |

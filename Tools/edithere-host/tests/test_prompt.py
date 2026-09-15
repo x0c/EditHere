@@ -11,7 +11,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from edithere_host.prompt import batch_prompt, execution_prompt  # noqa: E402
+from edithere_host.prompt import (  # noqa: E402
+    assemble_execution_assets,
+    batch_prompt,
+    ensure_page_png_assets,
+    execution_prompt,
+)
 
 FIXTURE = Path(__file__).resolve().parents[3] / "Fixtures" / "gate1" / "package" / "manifest.json"
 
@@ -86,6 +91,41 @@ class PromptBuilderTests(unittest.TestCase):
         text = batch_prompt(package)
         self.assertIn("Control: button", text)
         self.assertIn("Remove the marked element from the product.", text)
+
+    def test_ensure_page_png_does_not_rewrite_uploaded_prompt(self) -> None:
+        annotated = b"annotated-bytes"
+        package = {
+            "captures": [
+                {
+                    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                    "screenID": "home",
+                    "annotatedImage": {"relativePath": "assets/a.png"},
+                }
+            ],
+            "annotations": [
+                {
+                    "captureID": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                    "selectionKind": "bounds",
+                    "action": "removeElement",
+                    "requestText": "",
+                    "targetHint": {},
+                }
+            ],
+        }
+        uploaded = (
+            "Page 1: page-1.png\n\nApp: X\n\n1. Page 1 · home\nRemove it.\n"
+        ).encode("utf-8")
+        assets = {
+            "assets/a.png": annotated,
+            "agent-prompt.txt": uploaded,
+        }
+        out = ensure_page_png_assets(package, assets)
+        self.assertEqual(out["agent-prompt.txt"], uploaded)
+        self.assertEqual(out["page-1.png"], annotated)
+
+        prompt, assembled = assemble_execution_assets(package, {"assets/a.png": annotated})
+        self.assertIn("page-1.png", assembled)
+        self.assertIn("1. Page 1 · home", prompt)
 
 
 if __name__ == "__main__":

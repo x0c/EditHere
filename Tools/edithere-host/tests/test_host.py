@@ -452,13 +452,27 @@ class HostHTTPTests(unittest.TestCase):
         self.assertEqual(status, 200, body)
         self.assertTrue(body["ok"])
         self.assertTrue(body["meta"].get("created"))
+        self.assertEqual(body["meta"].get("executionPath"), "named-executor-dump")
+        self.assertTrue(body["meta"].get("dumpStarted"))
         task = body["data"]
-        stored = (
-            self.data_dir / "tasks" / task["remoteTaskID"] / "package" / "agent-prompt.txt"
-        )
-        prompt = stored.read_text(encoding="utf-8")
+        pkg_dir = self.data_dir / "tasks" / task["remoteTaskID"] / "package"
+        prompt = (pkg_dir / "agent-prompt.txt").read_text(encoding="utf-8")
         self.assertIn("1. Page 1 · home", prompt)
         self.assertIn("Rename the title", prompt)
+        self.assertTrue((pkg_dir / "page-1.png").is_file())
+        self.assertEqual((pkg_dir / "page-1.png").read_bytes(), self.asset_bytes)
+
+    def test_uploaded_prompt_keeps_text_and_still_gets_page_png(self) -> None:
+        status, body = self._post()
+        self.assertEqual(status, 200, body)
+        self.assertTrue(body["ok"])
+        self.assertEqual(body["meta"].get("executionPath"), "named-executor-dump")
+        task = body["data"]
+        pkg_dir = self.data_dir / "tasks" / task["remoteTaskID"] / "package"
+        stored_prompt = (pkg_dir / "agent-prompt.txt").read_bytes()
+        self.assertEqual(stored_prompt, self.prompt_bytes)
+        self.assertTrue((pkg_dir / "page-1.png").is_file())
+        self.assertEqual((pkg_dir / "page-1.png").read_bytes(), self.asset_bytes)
 
     def test_preview_assembles_prompt_without_dump(self) -> None:
         assets_no_prompt = {self.asset_rel: self.asset_bytes}

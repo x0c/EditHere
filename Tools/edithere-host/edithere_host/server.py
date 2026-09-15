@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Callable, Optional
 from urllib.parse import parse_qs, unquote, urlparse
 
+from . import NAMED_EXECUTOR_DUMP, __version__
 from .advertise import Advertiser, advertisable
 from .config import HostConfig
 from .envelope import envelope, error_body
@@ -19,7 +20,7 @@ from .package_util import (
     require_canonical_prompt_bytes,
     validate_package_and_assets,
 )
-from .prompt import assemble_execution_assets, execution_prompt
+from .prompt import assemble_execution_assets, ensure_page_png_assets, execution_prompt
 from .executors import MissingExecutor, UnknownExecutor
 from .executors.dispatch import dump_accepted_task, read_executor_name, require_known_executor
 from .store import ConflictError, TaskStore
@@ -179,7 +180,14 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
             if path in ("/v1/health", "/health"):
                 if not self._check_token():
                     return
-                self._ok({"status": "ok", "destinationID": "local-host"})
+                self._ok(
+                    {
+                        "status": "ok",
+                        "destinationID": "local-host",
+                        "executionPath": NAMED_EXECUTOR_DUMP,
+                        "version": __version__,
+                    }
+                )
                 return
 
             # Optional nested route: /v1/projects/{projectID}/submissions/{submissionID}
@@ -343,7 +351,8 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
             except ValueError as exc:
                 self._fail(400, "incomplete_packet", str(exc))
                 return None
-            return assets
+            # Keep client prompt verbatim; still materialize page-N.png for dump.
+            return ensure_page_png_assets(package, assets)
 
         def _handle_preview(self) -> None:
             parsed = self._parse_package_fields()
@@ -451,8 +460,10 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
                 return
 
             worker_meta: dict[str, Any] = {}
+            dumped = False
             if created and executor_name:
                 dump_accepted_task(state.config, state.store, task, wait=False)
+                dumped = True
             elif created and state.auto_worker:
                 # Dormant opt-in path. Named executor dump is the live path.
                 worker_meta = enqueue_worker(
@@ -469,6 +480,9 @@ def make_handler(state: HostServerState) -> type[BaseHTTPRequestHandler]:
                 status=200,
                 created=created,
                 reused=not created,
+                executionPath=NAMED_EXECUTOR_DUMP,
+                executor=executor_name,
+                dumpStarted=dumped,
                 workerRequestPath=worker_meta.get("workerRequestPath"),
             )
 
