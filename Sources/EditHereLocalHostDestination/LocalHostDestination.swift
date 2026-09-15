@@ -3,6 +3,10 @@ import EditHereCore
 
 /// HTTP destination that posts evidence packages to a development-host receiver.
 public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
+    /// Matches host `meta.executionPath` / `edithere_host.NAMED_EXECUTOR_DUMP`.
+    /// A 200 without this value means an older receiver accepted without dumping (假成功).
+    public static let namedExecutorDumpPath = "named-executor-dump"
+
     public let destinationID: String
     public let displayName: String
     public let capabilities: EditHereDestinationCapabilities
@@ -157,21 +161,22 @@ public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 request.httpBody = body
 
-                let (responseData, response) = try await session.data(for: request)
-                try Self.throwIfHTTPError(response: response, data: responseData)
-                let payload = try Self.decodeEnvelope(responseData)
-                let task = try Self.decodeTaskPayload(
-                    payload.data,
-                    fallbackDestinationID: destinationID,
-                    expectedProjectID: projectID
-                )
-                return EditHereSubmissionReceipt(
-                    destinationID: destinationID,
-                    remoteTaskID: task.remoteTaskID,
-                    submissionID: task.submissionID ?? package.id,
-                    state: task.state,
-                    message: task.summary ?? payload.message
-                )
+                  let (responseData, response) = try await session.data(for: request)
+                  try Self.throwIfHTTPError(response: response, data: responseData)
+                  let payload = try Self.decodeEnvelope(responseData)
+                  try Self.requireNamedExecutorDump(payload.meta)
+                  let task = try Self.decodeTaskPayload(
+                      payload.data,
+                      fallbackDestinationID: destinationID,
+                      expectedProjectID: projectID
+                  )
+                  return EditHereSubmissionReceipt(
+                      destinationID: destinationID,
+                      remoteTaskID: task.remoteTaskID,
+                      submissionID: task.submissionID ?? package.id,
+                      state: task.state,
+                      message: task.summary ?? payload.message
+                  )
             } catch {
                 lastError = error
             }
@@ -227,8 +232,8 @@ public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
 
     /// Discovery contract with `edithere-host`: service type `_edithere._tcp`,
     /// TXT `project` equals this projectID. Mirror of the host TXT keys.
-    static let discoveryServiceType = "_edithere._tcp."
-    static let discoveryDomain = "local."
+    public static let discoveryServiceType = "_edithere._tcp."
+    public static let discoveryDomain = "local."
     /// One browse turn is short: discovery is a convenience, the bundled
     /// `baseURL` is the guarantee. Never pend Submit on the LAN.
     static let discoveryTimeoutSeconds = 1.5
@@ -451,9 +456,14 @@ public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
         var ok: Bool
         var data: PayloadData?
         var error: EnvelopeError?
+        var meta: EnvelopeMeta?
         var message: String? {
             error?.message
         }
+    }
+
+    private struct EnvelopeMeta: Decodable {
+        var executionPath: String?
     }
 
     private struct EnvelopeError: Decodable {
@@ -481,6 +491,14 @@ public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
             return try EditHereJSONCoding.decoder.decode(Envelope.self, from: data)
         } catch {
             throw EditHereDestinationError.underlying("Invalid host response envelope.")
+        }
+    }
+
+    private static func requireNamedExecutorDump(_ meta: EnvelopeMeta?) throws {
+        guard meta?.executionPath == namedExecutorDumpPath else {
+            throw EditHereDestinationError.underlying(
+                "Host accepted the package but is not a dump-capable EditHere receiver. Restart edithere-host on this URL."
+            )
         }
     }
 

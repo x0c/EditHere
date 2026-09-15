@@ -40,7 +40,7 @@ Preview is `POST /v1/preview` with the same body. It returns `{ prompt }` and do
 - Generate the numbered-screenshot legend (template 8 rules). Never print packing-generation numbers, selectors, or a second unannotated original.
 - Fail Submit when the executor name is missing or unknown.
 - Dump and assume the executor finishes. Do not add task-status, result write-back, or result UI.
-- Successful Submit responses include `meta.executionPath = "named-executor-dump"` (also on `/v1/health`). Thin clients must treat a 200 without that field as an older receiver that accepted without dumping (假成功).
+- Successful Submit responses include `meta.executionPath = "named-executor-dump"` (also on `/v1/health`). Chrome and iOS Local Host must treat a 200 without that field as an older receiver that accepted without dumping (假成功).
 - When the client omits `agent-prompt.txt`, generate it and copy annotated captures to `page-N.png`. When the client uploads a prompt, **validate** it and still materialize `page-N.png`; do not silently rewrite the prompt text.
 
 ## What stays iOS-only

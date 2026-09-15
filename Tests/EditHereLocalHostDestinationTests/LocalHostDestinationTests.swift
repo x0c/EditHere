@@ -144,7 +144,7 @@ struct EditHereLocalHostDestinationTests {
                 "summary": "Accepted"
               },
               "error": null,
-              "meta": {}
+              "meta": {"executionPath": "named-executor-dump"}
             }
             """.data(using: .utf8)!
             let response = HTTPURLResponse(
@@ -194,6 +194,69 @@ struct EditHereLocalHostDestinationTests {
                 Issue.record("Expected conflict, got \(error)")
                 return
             }
+        }
+    }
+
+    @Test func submitRejectsSuccessWithoutNamedExecutorDumpMeta() async throws {
+        MockURLProtocol.reset()
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+
+        let png = Data(repeating: 3, count: 24)
+        let package = makePackage(png: png)
+        let packageRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("edithere-lh-\(UUID().uuidString)", isDirectory: true)
+        let originalPath = package.captures[0].originalImage.relativePath
+        let annotatedPath = package.captures[0].annotatedImage.relativePath
+        _ = try EditHereEvidenceWriter().write(
+            package: package,
+            to: packageRoot,
+            assets: [originalPath: png, annotatedPath: png]
+        )
+        defer { try? FileManager.default.removeItem(at: packageRoot) }
+
+        MockURLProtocol.handler = { request in
+            let payload = """
+            {
+              "ok": true,
+              "data": {
+                "remoteTaskID": "\(UUID().uuidString)",
+                "submissionID": "\(package.id.uuidString)",
+                "destinationID": "local-host",
+                "projectID": "edithere-sample",
+                "state": "submitted",
+                "summary": "Accepted"
+              },
+              "error": null,
+              "meta": {}
+            }
+            """.data(using: .utf8)!
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: ["Content-Type": "application/json"]
+            )!
+            return (response, payload)
+        }
+
+        let destination = EditHereLocalHostDestination(
+            baseURL: URL(string: "http://127.0.0.1:8787")!,
+            projectID: "edithere-sample",
+            token: "secret",
+            session: session,
+            discoveryEnabled: false
+        )
+        do {
+            _ = try await destination.submit(package: package, assetRootURL: packageRoot)
+            Issue.record("Expected rejection of old receiver without executionPath")
+        } catch let error as EditHereDestinationError {
+            guard case .underlying(let message) = error else {
+                Issue.record("Expected underlying dump-capability error, got \(error)")
+                return
+            }
+            #expect(message.contains("dump-capable"))
         }
     }
 
