@@ -119,6 +119,6 @@ Feasibility experiment 1 in the cross-project design remains the quality gate fo
 
 ## Current implementation
 
-The Agent-facing prompt is a short legend for the numbered screenshots. Internal packing generation **8** must **not** appear in that text. The **host** (`edithere_host/prompt.py`) is the canonical generator for thin clients (Chrome). iOS may still derive the same legend locally for on-device Preview; Submit may upload that text, which the host validates. File export may prefix `Page 1: page-1.png` lines with no lecture. Do not restore process copy. Named-executor dump is wired (`corral-cursor`). Do not re-implement dump in each client.
+The Agent-facing prompt is a short legend for the numbered screenshots. Internal packing generation **8** must **not** appear in that text. The **host** (`host/edithere_host/prompt.py` in the sibling `host/` repo) is the canonical generator for thin clients (Chrome). iOS may still derive the same legend locally for on-device Preview; Submit may upload that text, which the host validates. File export may prefix `Page 1: page-1.png` lines with no lecture. Do not restore process copy. Named-executor dump is wired (`corral-cursor`). Do not re-implement dump in each client.
 
 The preview is a developer inspection of the Agent packet. It must not become a plan-approval step. Back returns to Marks; Submit on Marks still starts work.

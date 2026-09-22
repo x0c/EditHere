@@ -4,7 +4,7 @@ Public summary of non-negotiable boundaries for EditHere. Product behavior detai
 
 ## Shared server, per-platform capture
 
-- Capture UI is per client (iOS overlay, Chrome overlay, later Android). After a mark exists, prompt assembly, packet wrapping, and named-executor dump belong to the local host (`Tools/edithere-host`).
+- Capture UI is per client (iOS overlay, Chrome overlay, later Android). After a mark exists, prompt assembly, packet wrapping, and named-executor dump belong to the local host (sibling `host/` repo, `Max/edithere-host`).
 - Do not add a JavaScript (or other) runtime that iOS or Android must call. Clients serialize the evidence package and POST it.
 - Chrome and other thin clients may omit `agent-prompt.txt`. The host generates the canonical prompt. iOS may still upload a prompt; if present it is validated, not silently rewritten.
 

@@ -62,7 +62,7 @@ struct EditHereLocalHostDestinationTests {
     }
 
     @Test func discoveryConstantsMatchHostContract() {
-        // Mirror of Tools/edithere-host/edithere_host/advertise.py
+        // Mirror of host/edithere_host/advertise.py (sibling host/ repo)
         #expect(EditHereLocalHostDestination.discoveryServiceType == "_edithere._tcp.")
         #expect(EditHereLocalHostDestination.discoveryDomain == "local.")
     }

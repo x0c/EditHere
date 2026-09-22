@@ -74,7 +74,7 @@ Host after dump: do not wait for a file, do not apply mark outcomes, do not patc
 
 | Piece | Location |
 |---|---|
-| Executor interface + name registry | `Tools/edithere-host/edithere_host/executors/` |
+| Executor interface + name registry | `host/edithere_host/executors/` (sibling `host/` repo) |
 | Each executor implementation | Same tree; optional deps only inside that module |
 | SDK | No executor-backend imports |
 

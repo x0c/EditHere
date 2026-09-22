@@ -9,7 +9,7 @@ Mark on-screen UI and submit a numbered-screenshot packet to a coding assistant.
 | Path | Remote | Role |
 |---|---|---|
 | `sdk-swift/` | `https://github.com/x0c/EditHere.git` (public); private Forgejo mirror for maintainers | iOS SDK (`EditHereCore`, `EditHere`, destinations) + sample app |
-| `sdk-swift/Tools/edithere-host/` | same git as `sdk-swift/` | Shared local server: canonical prompt, package accept, fire-and-forget dump |
+| `host/` | private Forgejo `Max/edithere-host` | Shared local server: canonical prompt, package accept, fire-and-forget dump |
 | `chrome/` | private Forgejo `Max/edithere-chrome` | Chrome extension capture client; POSTs packages to the host |
 
 Android is a later capture client against the same host — not started.
@@ -25,7 +25,7 @@ Android is a later capture client against the same host — not started.
 - `sdk-swift/docs/reviews/2026-09-12-EXECUTION_DELIVERY_REVIEW.md`: **must read** before implementing, reviewing or claiming Agent execution delivery, Local Host recovery, cancellation or project configuration; records reproduced prompt loss, false working/cancel states and binding failures.
 
 - `sdk-swift/docs/design/AGENT_EXECUTION_PLAN.md`: **must read** before planning, implementing or reviewing Agent task delivery, execution recovery, result return, 任务状态 / 回写 / 写回 / 简单化 / 默认关闭 / 幂等 / 重新标记再发 / **假成功** / **提交成功助手没收到**, or the end-to-end loop; first-release is fire-and-forget (dump to the named executor, assume it finishes; re-mark and resubmit on failure). Open dump defects are fake-success Submit. Skipping it resumes task-status, result write-back, or result UI that must stay dormant and default off.
-- `sdk-swift/Tools/edithere-host/`: development-host receiver (accept/dedupe/status/cancel/replay). Read its README before changing Submit transport, host config, or gate-1 replay.
+- `host/`: development-host receiver (accept/dedupe/status/cancel/replay). Read its README before changing Submit transport, host config, or gate-1 replay.
 - `sdk-swift/Fixtures/gate1/`: image-to-source acceptance fixture and device evidence for the first execution gate.
 - `sdk-swift/Examples/EditHereSample/edithere.project.json`: project-owned receiver/build config (no phone pairing UI).
 
@@ -90,7 +90,7 @@ Remote: `https://github.com/x0c/EditHere.git`
 - `Sources/EditHere` — iOS floating UI + selection + capture
 - `Sources/EditHereFileDestination` — disk exporter destination
 - `Sources/EditHereLocalHostDestination` — HTTP submit to development-host receiver
-- `Tools/edithere-host` — shared local server (canonical prompt, accept, dump). See its README and `docs/design/CROSS_PLATFORM_ARCHITECTURE.md`.
+- Shared local server lives in the sibling `host/` repo (canonical prompt, accept, dump). See its README and `docs/design/CROSS_PLATFORM_ARCHITECTURE.md`.
 - `Fixtures/gate1` — image-to-source acceptance package + device evidence
 - `Examples/EditHereSample` — demo host app (XcodeGen); project config in `edithere.project.json`
 - `Tests` — core, file-destination, and local-host destination tests

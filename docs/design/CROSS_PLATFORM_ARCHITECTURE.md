@@ -4,7 +4,7 @@ Status: product ruling 2026-09-15. Capture is per client. Prompt assembly, evide
 
 ## Why a host, not a shared client SDK
 
-iOS is Swift. Chrome is TypeScript. Android will be its own stack. Those runtimes cannot import one another. The reusable work after a mark exists is already an HTTP service on the development machine: [`Tools/edithere-host`](../../Tools/edithere-host/).
+iOS is Swift. Chrome is TypeScript. Android will be its own stack. Those runtimes cannot import one another. The reusable work after a mark exists is already an HTTP service on the development machine: the sibling [`host`](../../../host/) repo (`Max/edithere-host`).
 
 That host is the shared server for this product. It already accepts packages, checks the executor name, and dumps to the named coding assistant (fire-and-forget). From 2026-09-15 it also **generates** the canonical Agent prompt when the client omits `agent-prompt.txt`, and it answers `POST /v1/preview` without persisting or dumping.
 
@@ -14,7 +14,7 @@ That host is the shared server for this product. It already accepts packages, ch
 |---|---|---|
 | Marking UI, hit-testing, screenshot | Each client | iOS frozen canvas; Chrome live DOM pick; later Android |
 | Evidence JSON + annotated PNGs | Each client serializes the same schema | Web-only hints (`cssSelector`, `pageURL`, React file/line) may be stored on `targetHint`. They must not appear in Agent-facing text |
-| Canonical prompt | Host (`edithere_host/prompt.py`) | Same rules as [AGENT_PROMPT_CORE_DESIGN.md](AGENT_PROMPT_CORE_DESIGN.md) |
+| Canonical prompt | Host (`host/edithere_host/prompt.py` in the sibling `host/` repo) | Same rules as [AGENT_PROMPT_CORE_DESIGN.md](AGENT_PROMPT_CORE_DESIGN.md) |
 | Digest, accept, dump | Host | Missing/unknown executor still fails Submit (假成功) |
 | Coding-assistant adapters | Host executors | First name: `corral-cursor` |
 
