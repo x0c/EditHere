@@ -161,22 +161,22 @@ public struct EditHereLocalHostDestination: EditHereDestination, Sendable {
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 request.httpBody = body
 
-                  let (responseData, response) = try await session.data(for: request)
-                  try Self.throwIfHTTPError(response: response, data: responseData)
-                  let payload = try Self.decodeEnvelope(responseData)
-                  try Self.requireNamedExecutorDump(payload.meta)
-                  let task = try Self.decodeTaskPayload(
-                      payload.data,
-                      fallbackDestinationID: destinationID,
-                      expectedProjectID: projectID
-                  )
-                  return EditHereSubmissionReceipt(
-                      destinationID: destinationID,
-                      remoteTaskID: task.remoteTaskID,
-                      submissionID: task.submissionID ?? package.id,
-                      state: task.state,
-                      message: task.summary ?? payload.message
-                  )
+                let (responseData, response) = try await session.data(for: request)
+                try Self.throwIfHTTPError(response: response, data: responseData)
+                let payload = try Self.decodeEnvelope(responseData)
+                try Self.requireNamedExecutorDump(payload.meta)
+                let task = try Self.decodeTaskPayload(
+                    payload.data,
+                    fallbackDestinationID: destinationID,
+                    expectedProjectID: projectID
+                )
+                return EditHereSubmissionReceipt(
+                    destinationID: destinationID,
+                    remoteTaskID: task.remoteTaskID,
+                    submissionID: task.submissionID ?? package.id,
+                    state: task.state,
+                    message: task.summary ?? payload.message
+                )
             } catch {
                 lastError = error
             }
